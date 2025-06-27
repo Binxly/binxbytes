@@ -3,39 +3,86 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
+  <link rel="preload" href="/static/css/styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/static/css/styles.css"></noscript>
   <title>{{ .Title }}</title>
   <meta name="description" content="{{ .Description }}">
 </head>
 <body>
-  <nav class="flex items-center justify-between bg-zinc-900 p-6">
-    <div class="flex items-center flex-shrink-0 text-white mr-6">
-      <span class="font-semibold text-xl tracking-tight"><a href="/">binx.page</a></span>
+  <nav>
+    <div class="logo">
+      <span><a href="/">binx.page</a></span>
     </div>
-    <div class="block">
-      <ul class="flex space-x-4">
-        <li><a href="/" class="text-zinc-300 hover:bg-zinc-700 px-3 py-2 rounded">Home</a></li>
-        <li><a href="/about" class="text-zinc-300 hover:bg-zinc-700 px-3 py-2 rounded">About</a></li>
-        <li><a href="/blog" class="text-zinc-300 hover:bg-zinc-700 px-3 py-2 rounded">Blog</a></li>
-        <li><a href="/contact" class="text-zinc-300 hover:bg-zinc-700 px-3 py-2 rounded">Contact</a></li>
+    <div>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/blog">Blog</a></li>
+        <li><a href="/contact">Contact</a></li>
       </ul>
     </div>
   </nav>
-  <div class="container mx-auto">
-    <header class="text-center my-8">
-      <h1 class="text-4xl font-bold">{{ .Title }}</h1>
-      <p class="text-gray-500 mt-2">{{ .Description }}</p>
-    </header>
-    <main>
-      <ul class="prose mx-auto">
+  <div class="content-container">
+    <section class="intro-section">
+      <h1 class="intro-title">Hi, I'm Zac</h1>
+      <p class="intro-text">
+        I'm an indie full-stack developer who thinks stylesheets suck.
+      </p>
+      <p class="intro-text">
+        Focusing on learning more about backend development, novel deep learning architectures, and Linux.
+      </p>
+    </section>
+    
+    <section class="projects-section">
+      <h2 class="section-title">Currently working on</h2>
+      <div class="projects-grid">
+        <div class="project-card">
+          <h3 class="project-title">
+            <a href="https://github.com/binxly/binxbytes" class="project-link">This Website</a>
+          </h3>
+          <div class="project-tech">Go • HTML • CSS</div>
+          <p class="project-description">i remember not remembering the pain of css styles.</p>
+        </div>
+        <div class="project-card">
+          <h3 class="project-title">
+            <a href="#" class="project-link">System Tools</a>
+          </h3>
+          <div class="project-tech">Go • Shell • Linux</div>
+          <p class="project-description">Wowe so much filler.</p>
+        </div>
+        <div class="project-card">
+          <h3 class="project-title">
+            <a href="#" class="project-link">Learning Projects</a>
+          </h3>
+          <div class="project-tech">Various • Learning</div>
+          <p class="project-description">This is all filler material for the moment.</p>
+        </div>
+      </div>
+    </section>
+    
+    <section class="home-posts-section">
+      <h2 class="section-title">Recent posts</h2>
+      <div class="home-posts-list">
         {{ range .Posts }}
-          <li><a href="/posts/{{ .Slug }}">{{ .Title }}</a></li>
+          <div class="home-post-item">
+            <div class="home-post-meta">
+              <time class="home-post-date">{{ .FormattedDate }}</time>
+              {{ if .Category }}<span class="post-separator">•</span><span class="home-post-category">{{ .Category }}</span>{{ end }}
+            </div>
+            <h3 class="home-post-title">
+              <a href="/blog/{{ .Slug }}" class="home-post-link">{{ .Title }}</a>
+            </h3>
+            {{ if .Description }}<p class="home-post-description">{{ .Description }}</p>{{ end }}
+          </div>
         {{ end }}
-      </ul>
-    </main>
-    <footer class="text-center mt-12 text-gray-400">
-      <p>© 2025 Binx</p>
-    </footer>
+      </div>
+    </section>
   </div>
+  <footer>
+  <!-- TODO: Socials? -->
+    <p>© 2025 Zac Bagley</p>
+  </footer>
 </body>
 </html>

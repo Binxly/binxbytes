@@ -3,33 +3,54 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="preload" href="/static/css/styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/static/css/styles.css"></noscript>
   <title>{{.Title}} | binx.page</title>
 </head>
 <body>
-  <nav class="flex items-center justify-between bg-zinc-900 p-6">
-    <div class="flex items-center flex-shrink-0 text-white mr-6">
-      <span class="font-semibold text-xl tracking-tight"><a href="/">binx.page</a></span>
+<!-- TODO: Add a div for Return to Blog Home, maybe a return to homepage? -->
+  <nav>
+    <div class="logo">
+      <span><a href="/">binx.page</a></span>
     </div>
-    <div class="block">
-      <ul class="flex space-x-4">
-        <li><a href="/" class="text-zinc-300 hover:bg-zinc-700 px-3 py-2 rounded">Home</a></li>
-        <li><a href="/about" class="text-zinc-300 hover:bg-zinc-700 px-3 py-2 rounded">About</a></li>
-        <li><a href="/blog" class="text-zinc-300 hover:bg-zinc-700 px-3 py-2 rounded">Blog</a></li>
-        <li><a href="/contact" class="text-zinc-300 hover:bg-zinc-700 px-3 py-2 rounded">Contact</a></li>
+    <div>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/blog">Blog</a></li>
+        <li><a href="/contact">Contact</a></li>
       </ul>
     </div>
   </nav>
-  <div class="container mx-auto">
-    <h1 class="text-4xl font-bold text-center pt-10">{{.Title}}</h1>
-    {{with .Author}}
-    <div class="text-center mt-4">
-      <p class="text-gray-500 pb-10">Author: <a href="mailto:{{.Email}}">{{.Name}}</a></p>
-    </div>
-    {{end}}
-    <div class="prose max-w-full">
-      {{.Content}}
-    </div>
+  <div class="content-container">
+    <header class="post-header">
+      <h1 class="post-title">{{.Title}}</h1>
+      {{with .FormattedDate}}
+      <div class="post-meta">
+        <span class="post-date">{{.}}</span>
+        {{with $.Author}}
+        <span>•</span>
+        <span>By <a href="mailto:{{.Email}}">{{.Name}}</a></span>
+        {{end}}
+      </div>
+      {{end}}
+      {{with .Author}}
+      {{if not $.FormattedDate}}
+      <div class="post-author">
+        <p>By <a href="mailto:{{.Email}}">{{.Name}}</a></p>
+      </div>
+      {{end}}
+      {{end}}
+    </header>
+    <main>
+      <article class="prose">
+        {{.Content}}
+      </article>
+    </main>
   </div>
+  <footer class="blog-footer">
+    <p>© 2025 Zac Bagley</p>
+  </footer>
 </body>
 </html>

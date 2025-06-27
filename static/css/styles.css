@@ -1,0 +1,673 @@
+/* ========================================
+   GENERAL PAGE CONTENT STYLES
+   (Used across all templates: index, about, etc.)
+   ======================================== */
+
+/* Reset and base styles */
+* {
+  margin: 0;
+}
+
+body {
+  font-family: 'Inter', system-ui; /* 'Segoe UI Symbol', 'Segoe UI Emoji', 'Apple Color Emoji', sans-serif, ui-sans-serif */
+  color: #374151;
+  background-color: #121313;
+}
+
+/* Navigation */
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #181919;
+  padding: 1rem 2.5rem 1rem 2.5rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+nav .logo {
+  display: flex;
+  align-items: center;
+  color: #bbae9f;
+}
+
+nav .logo a {
+  font-weight: 600;
+  font-size: 1.25rem;
+  letter-spacing: -0.025em;
+  color: #e8e3dc;
+  text-decoration: none;
+}
+
+nav ul {
+  display: flex;
+  list-style: none;
+  padding-left: 0;
+  margin-left: 0;
+}
+
+nav ul li {
+    margin-right: 1rem;
+}
+
+nav ul li:last-child {
+  margin-right: 0;
+}
+
+nav ul li a {
+  color: #bbae9f;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.25rem;
+  text-decoration: none;
+  transition: background-color 0.5s ease;
+}
+
+nav ul li a:hover {
+  background-color: #3f3f46;
+}
+
+/* ========================================
+   HOME PAGE SPECIFIC STYLES
+   (index.gohtml)
+   ======================================== */
+
+/* Home container - Main layout for home page */
+.content-container {
+  max-width: 60rem;
+  margin: 5rem auto 0 auto;
+  padding: 0 1.5rem;
+}
+
+
+/* Intro section styling */
+.intro-section {
+  margin-bottom: 4rem;
+}
+
+.intro-title {
+  font-size: 2rem;
+  font-weight: 500;
+  color: #dfdbd5;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+.intro-text {
+  font-size: 1.25rem;
+  color: #bbae9f;
+  line-height: 1.7;
+}
+
+/* Section titles */
+.section-title {
+  font-size: 1.75rem;
+  font-weight: 500;
+  color: #dfdbd5;
+  margin-bottom: 2rem;
+  line-height: 1.3;
+}
+
+/* Projects section */
+.projects-section {
+  margin-bottom: 5rem;
+}
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  padding-left: 1rem;
+}
+
+/* Project cards */
+.project-card {
+  transition: transform 0.4s ease;
+}
+
+.project-card:hover {
+  transform: translateY(-5px);
+}
+
+.project-title {
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #dfdbd5;
+  line-height: 1.3;
+}
+
+.project-link {
+  color: #dfdbd5;
+  text-decoration: none;
+  border-bottom: 1.5px solid transparent;
+  transition: border-bottom 0.4s ease;
+}
+
+.project-link:hover {
+  color: #78716c;
+  border-bottom: 1.5px solid #89847f;
+  transition: color 0.4s ease, border-bottom 0.4s ease;
+}
+
+.project-description {
+  font-size: 1rem;
+  color: #938d87;
+  padding-left: 1rem;
+  line-height: 1.5;
+}
+
+.project-tech {
+  font-size: 0.8rem;
+  color: #7b7269;
+  line-height: 1.4;
+}
+
+.home-posts-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.home-post-item {
+  padding-left: 1rem;
+  background: none;
+  border: none;
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.home-post-title {
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #dfdbd5;
+  line-height: 1.2;
+}
+
+.home-post-link {
+  color: #dfdbd5;
+  text-decoration: none;
+  border-bottom: 1.5px solid transparent;
+  transition: border-bottom 0.4s ease;
+}
+
+.home-post-link:hover {
+  color: #78716c;
+  border-bottom: 1.5px solid #89847f;
+  transition: color 0.4s ease, border-bottom 0.4s ease;
+}
+
+.home-post-meta {
+  font-size: 0.8rem;
+  color: #7b7269;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.home-post-separator {
+  color: #d6d3d1;
+}
+
+.home-post-category {
+  color: #7b7269;
+}
+
+.home-post-description {
+  color: #938d87;
+  font-size: 1.1rem;
+  padding-left: 1rem;
+  margin-bottom: 2.5rem;
+  line-height: 1.6;
+}
+
+/* Footer - General page footer */
+footer {
+  text-align: center;
+  border-top: 1px solid #3f3f46;
+  margin-top: 5rem;
+  padding: 2rem 0;
+  color: #7b7269;
+}
+
+/* ========================================
+   BLOG POST SPECIFIC STYLES
+   ======================================== */
+
+/* Blog post content container */
+.prose {
+  max-width: 70ch;
+  margin: 0 auto;
+  font-size: 1.125rem;
+  line-height: 1.8;
+  color: #bbae9f;
+}
+
+/* Blog post header styling */
+.post-header {
+  text-align: center;
+  margin-bottom: 4rem;
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid #3f3f46;
+}
+
+.post-title {
+  font-size: 2.75rem;
+  font-weight: 700;
+  line-height: 1.15;
+  color: #dfdbd5;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.02em;
+}
+
+.post-meta {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  color: #7b7269;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.post-date {
+  color: #7b7269;
+}
+
+.post-author {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.post-author p {
+  color: #7b7269;
+  font-size: 0.9rem;
+}
+
+.post-meta .post-author a,
+.post-meta a,
+.post-author a {
+  color: #7b7269 !important;
+  text-decoration: none !important;
+  font-weight: 500;
+  cursor: pointer;
+}
+.post-meta .post-author a:hover,
+.post-meta a:hover,
+.post-author a:hover {
+  color: #dfdbd5 !important;
+  text-decoration: none !important;
+}
+
+/* Blog post typography */
+.prose h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #dfdbd5;
+  margin: 3rem 0 1.5rem 0;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+.prose h2 {
+  font-size: 1.625rem;
+  font-weight: 600;
+  color: #dfdbd5;
+  margin: 2.5rem 0 1rem 0;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.prose h3 {
+  font-size: 1.375rem;
+  font-weight: 600;
+  color: #dfdbd5;
+  margin: 2rem 0 0.75rem 0;
+  line-height: 1.3;
+}
+
+.prose h4 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #dfdbd5;
+  margin: 1.5rem 0 0.5rem 0;
+  line-height: 1.3;
+}
+
+.prose p {
+  margin-bottom: 1.75rem;
+  color: #bbae9f;
+  text-align: justify;
+  text-align-last: left;
+}
+
+/* Blog post list styling */
+.prose ul {
+  list-style: disc;
+  padding-left: 1.75rem;
+  margin-bottom: 1.75rem;
+}
+
+.prose ol {
+  list-style: decimal;
+  padding-left: 1.75rem;
+  margin-bottom: 1.75rem;
+}
+
+.prose li {
+  margin-bottom: 0.75rem;
+  color: #bbae9f;
+  line-height: 1.6;
+}
+
+/* Blog post blockquote styling */
+.prose blockquote {
+  border-left: 3px solid #3b82f6;
+  padding: 1.5rem 2rem;
+  margin: 2.5rem 0;
+  font-style: italic;
+  color: #938d87;
+  background-color: #1a1a1a;
+  border-radius: 0.375rem;
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+.prose strong {
+  font-weight: 600;
+  color: #dfdbd5;
+}
+
+.prose em {
+  font-style: italic;
+  color: #938d87;
+}
+
+/* Blog post code styling */
+.prose pre {
+  background-color: #1f2937;
+  color: #f9fafb;
+  padding: 1.75rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin: 2.5rem 0;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  border: 1px solid #374151;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.prose code {
+  background-color: #2a2a2a;
+  color: #f87171;
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.875em;
+  font-weight: 500;
+}
+
+.prose pre code {
+  background-color: transparent;
+  color: inherit;
+  padding: 0;
+  border-radius: 0;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/* Blog post image styling */
+.prose img {
+  display: block;
+  margin: 2.5rem auto;
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.prose img:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 12px -1px rgba(0, 0, 0, 0.15);
+}
+
+/* Blog post table styling */
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2.5rem 0;
+  font-size: 0.875rem;
+  border: 1px solid #3f3f46;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.prose th,
+.prose td {
+  padding: 0.875rem;
+  text-align: left;
+  border-bottom: 1px solid #3f3f46;
+}
+
+.prose th {
+  background-color: #1a1a1a;
+  font-weight: 600;
+  color: #dfdbd5;
+}
+
+.prose tr:hover {
+  background-color: #2a2a2a;
+}
+
+/* Blog post horizontal rule styling */
+.prose hr {
+  border: none;
+  height: 1px;
+  background-color: #3f3f46;
+  margin: 3.5rem 0;
+}
+
+/* Blog post link styling */
+.prose a {
+  color: #60a5fa;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 2px;
+  transition: color 0.2s ease;
+}
+
+.prose a:hover {
+  color: #93c5fd;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   (Applies to both general pages and blog posts)
+   ======================================== */
+@media (max-width: 768px) {
+  nav {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  nav ul li:last-child {
+    margin-right: 0rem;
+  }
+  
+  nav .logo {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    color: #bbae9f;
+    margin-right: 1.5rem;
+    margin-left: 1.5rem;
+  }
+  
+  nav ul {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .container {
+    padding: 0 0.5rem;
+  }
+  
+  .content-container {
+    padding: 0 1rem 1rem 1rem;
+  }
+
+  .intro-section {
+    margin-bottom: 2.5rem;
+  }
+  
+  .intro-title {
+    font-size: 1.5rem;
+    margin-top: 2.5rem;
+  }
+  
+  .intro-text {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .section-title {
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .projects-section {
+    margin-bottom: 2.5rem;
+  }
+  
+  .projects-grid {
+    gap: 2rem;
+  }
+
+  .project-title {
+    font-size: 1.1rem;
+  }
+
+  .project-description {
+    font-size: 1rem;
+  }
+
+  .project-tech {
+    font-size: 0.8rem;
+  }
+
+  /* .home-posts-section {
+    margin-bottom: 1rem;
+  } */
+  
+  .home-posts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .home-post-item {
+    margin-left: 1rem;
+    padding: 0;
+    background: none;
+    border: none;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+  
+  .home-post-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #dfdbd5;
+    line-height: 1.2;
+  }
+  
+  .home-post-link {
+    color: #dfdbd5;
+    text-decoration: none;
+    border-bottom: 1.5px solid transparent;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  
+  .home-post-link:hover {
+    color: #78716c; /* text-stone-600 */
+    border-bottom: 1.5px solid #000000;
+  }
+  
+  .home-post-meta {
+    font-size: 0.8rem;
+    color: #7b7269;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .home-post-separator {
+    color: #d6d3d1;
+  }
+  
+  .home-post-category {
+    color: #7b7269;
+  }
+  
+  .home-post-description {
+    color: #938d87;
+    font-size: 1rem;
+    margin-left: 1rem;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+  }
+  
+  header h1 {
+    font-size: 1.875rem;
+  }
+  
+  .post-title {
+    font-size: 2rem;
+  }
+  
+  .prose h1 {
+    font-size: 1.875rem;
+  }
+  
+  .prose h2 {
+    font-size: 1.5rem;
+  }
+  
+  .prose h3 {
+    font-size: 1.25rem;
+  }
+  
+  .prose {
+    font-size: 1rem;
+  }
+  
+  .prose pre {
+    padding: 1rem;
+    font-size: 0.75rem;
+  }
+  
+  .post-title {
+    font-size: 1.1rem;
+  }
+  .post-description {
+    font-size: 0.8rem;
+  }
+  .post-item {
+    margin-bottom: 1.5rem;
+  }
+  
+  .blog-footer {
+    margin-top: 2rem;
+    padding: 1.5rem 0;
+    font-size: 0.8rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .projects-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+} 

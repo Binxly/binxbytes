@@ -2,124 +2,137 @@ package main
 
 import (
 	"bytes"
+	"flag"
 	"html/template"
 	"io"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
+	"time"
 
-	"github.com/adrg/frontmatter"
+	"github.com/akrylysov/algnhsa"
+
 	"github.com/yuin/goldmark"
 	highlighting "github.com/yuin/goldmark-highlighting/v2"
+	meta "github.com/yuin/goldmark-meta"
+	"github.com/yuin/goldmark/parser"
 )
 
+var postCache map[string]Post
+var tmplPost *template.Template
+var tmplIndex *template.Template
+var tmplAbout *template.Template
+var baseDir string
+var devMode bool
+
+func init() {
+	flag.BoolVar(&devMode, "dev", false, "Run in development mode (use relative paths)")
+	flag.Parse()
+
+	if devMode {
+		baseDir = "."
+	} else {
+		ex, _ := os.Executable()
+		baseDir = filepath.Dir(ex)
+	}
+
+	tmplPost = template.Must(template.ParseFiles(filepath.Join(baseDir, "templates/post.gohtml")))
+	tmplIndex = template.Must(template.ParseFiles(filepath.Join(baseDir, "templates/index.gohtml")))
+	tmplAbout = template.Must(template.ParseFiles(filepath.Join(baseDir, "templates/about.gohtml")))
+}
+
 func main() {
+	postCache = LoadAllPosts()
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("GET /posts/{slug}", PostHandler(FileReader{}))
-	mux.HandleFunc("GET /", IndexHandler(LoadAllPosts()))
+	mux.HandleFunc("GET /blog/{slug}", PostHandler)
+	mux.HandleFunc("GET /", IndexHandler)
 	mux.HandleFunc("GET /about", AboutHandler)
+	mux.HandleFunc("GET /favicon.ico", GetFavicon)
 
-	err := http.ListenAndServe(":3030", mux)
+	fs := http.FileServer(http.Dir(filepath.Join(baseDir, "static")))
+	mux.Handle("GET /static/", http.StripPrefix("/static/", fs))
+
+	// -dev flag for local, otherwise needs algnhsa for lambda
+	if devMode {
+		port := os.Getenv("PORT")
+		if port == "" {
+			port = "3000"
+		}
+		log.Printf("Local dev on :%s", port)
+		log.Fatal(http.ListenAndServe(":"+port, mux))
+	} else {
+		log.Printf("Running with algnhsa")
+		algnhsa.ListenAndServe(mux, nil)
+	}
+}
+
+func PostHandler(w http.ResponseWriter, r *http.Request) {
+	slug := r.PathValue("slug")
+	post, ok := postCache[slug]
+	if !ok {
+		http.NotFound(w, r)
+		return
+	}
+	err := tmplPost.Execute(w, post)
 	if err != nil {
-		log.Fatal(err)
+		http.Error(w, "Error executing template", http.StatusInternalServerError)
 	}
 }
 
-type SlugReader interface {
-	Read(slug string) (string, error)
-}
-
-type FileReader struct{}
-
-func (fsr FileReader) Read(slug string) (string, error) {
-	f, err := os.Open("posts/" + slug + ".md")
+func IndexHandler(w http.ResponseWriter, r *http.Request) {
+	var posts []Post
+	for _, post := range postCache {
+		posts = append(posts, post)
+	}
+	sort.Slice(posts, func(i, j int) bool {
+		return posts[i].Date.After(posts[j].Date)
+	})
+	data := struct {
+		Title       string
+		Description string
+		Posts       []Post
+	}{
+		Title:       "BinxBytes",
+		Description: "Welcome to BinxBytes! Explore my latest posts.",
+		Posts:       posts,
+	}
+	err := tmplIndex.Execute(w, data)
 	if err != nil {
-		return "", err
-	}
-	defer f.Close()
-	b, err := io.ReadAll(f)
-	if err != nil {
-		return "", err
-	}
-	return string(b), nil
-}
-
-func PostHandler(sl SlugReader) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		var post Post
-		post.Slug = r.PathValue("slug")
-		postMarkdown, err := sl.Read(post.Slug)
-		if err != nil {
-			// TODO: Handle different errors in the future
-			http.Error(w, "Post not found", http.StatusNotFound)
-			return
-		}
-		rest, err := frontmatter.Parse(strings.NewReader(postMarkdown), &post)
-		if err != nil {
-			http.Error(w, "Error parsing frontmatter", http.StatusInternalServerError)
-			return
-		}
-		mdRenderer := goldmark.New(
-			goldmark.WithExtensions(
-				highlighting.NewHighlighting(
-					highlighting.WithStyle("dracula"),
-				),
-			),
-		)
-		var buf bytes.Buffer
-		err = mdRenderer.Convert(rest, &buf)
-		if err != nil {
-			http.Error(w, "Error converting markdown", http.StatusInternalServerError)
-			return
-		}
-		// TODO: Parse the template once, not every page load.
-		tpl, err := template.ParseFiles("templates/post.gohtml")
-		if err != nil {
-			http.Error(w, "Error parsing template", http.StatusInternalServerError)
-			return
-		}
-		post.Content = template.HTML(buf.String())
-		err = tpl.Execute(w, post)
-	}
-}
-
-func IndexHandler(posts []Post) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		tpl, err := template.ParseFiles("templates/index.gohtml")
-		if err != nil {
-			http.Error(w, "Error parsing template", http.StatusInternalServerError)
-			return
-		}
-		data := struct {
-			Title       string
-			Description string
-			Posts       []Post
-		}{
-			Title:       "BinxBytes",
-			Description: "Welcome to BinxBytes! Explore my latest posts.",
-			Posts:       posts,
-		}
-		tpl.Execute(w, data)
+		http.Error(w, "Error executing template", http.StatusInternalServerError)
 	}
 }
 
 func AboutHandler(w http.ResponseWriter, r *http.Request) {
-	tpl, err := template.ParseFiles("templates/about.gohtml")
+	err := tmplAbout.Execute(w, nil)
 	if err != nil {
-		http.Error(w, "Error parsing template", http.StatusInternalServerError)
-		return
+		http.Error(w, "Error executing template", http.StatusInternalServerError)
 	}
-	tpl.Execute(w, nil)
+}
+
+func GetFavicon(w http.ResponseWriter, r *http.Request) {
+	faviconPath := filepath.Join(baseDir, "static", "favicon.ico")
+	http.ServeFile(w, r, faviconPath)
 }
 
 type Post struct {
-	Title   string `toml:"title"`
-	Slug    string `toml:"slug"`
-	Content template.HTML
-	Author  Author `toml:"author"`
+	Title       string `toml:"title"`
+	Slug        string `toml:"slug"`
+	Description string `toml:"description"`
+	Category    string `toml:"category"`
+	Content     template.HTML
+	Date        time.Time `toml:"date"`
+	Author      Author    `toml:"author"`
+}
+
+func (p Post) FormattedDate() string {
+	if p.Date.IsZero() {
+		return ""
+	}
+	return p.Date.Format("January 2, 2006")
 }
 
 type Author struct {
@@ -127,16 +140,18 @@ type Author struct {
 	Email string `toml:"email"`
 }
 
-// type PostData struct {
-// 	Title   string
-// 	Content template.HTML
-// 	Author  string
-// }
-
-// LoadAllPosts reads all .md files in the posts directory, parses their frontmatter, and returns a slice of Post structs.
-func LoadAllPosts() []Post {
-	var posts []Post
-	files, err := filepath.Glob("posts/*.md")
+func LoadAllPosts() map[string]Post {
+	posts := make(map[string]Post)
+	mdRenderer := goldmark.New(
+		goldmark.WithExtensions(
+			meta.Meta,
+			highlighting.NewHighlighting(
+				highlighting.WithStyle("dracula"),
+			),
+		),
+	)
+	postsDir := filepath.Join(baseDir, "blog")
+	files, err := filepath.Glob(filepath.Join(postsDir, "*.md"))
 	if err != nil {
 		log.Printf("Error globbing md files: %v", err)
 		return posts
@@ -147,23 +162,80 @@ func LoadAllPosts() []Post {
 			log.Printf("Error opening file %s: %v", file, err)
 			continue
 		}
-		var post Post
+		defer f.Close()
+
 		b, err := io.ReadAll(f)
-		f.Close()
 		if err != nil {
 			log.Printf("Error reading file %s: %v", file, err)
 			continue
 		}
-		_, err = frontmatter.Parse(strings.NewReader(string(b)), &post)
+
+		context := parser.NewContext()
+		var buf bytes.Buffer
+		err = mdRenderer.Convert(b, &buf, parser.WithContext(context))
 		if err != nil {
-			log.Printf("Error parsing frontmatter in %s: %v", file, err)
+			log.Printf("Error converting markdown in %s: %v", file, err)
 			continue
 		}
-		// Set the slug based on the filename (without .md extension) if not present
+
+		post := Post{}
+		if metaData := meta.Get(context); metaData != nil {
+			if title, ok := metaData["title"]; ok {
+				if titleStr, ok := title.(string); ok {
+					post.Title = titleStr
+				}
+			}
+			if slug, ok := metaData["slug"]; ok {
+				if slugStr, ok := slug.(string); ok {
+					post.Slug = slugStr
+				}
+			}
+			if dateStr, ok := metaData["date"]; ok {
+				if date, ok := dateStr.(string); ok {
+					if parsedDate, err := time.Parse("2006-01-02", date); err == nil {
+						post.Date = parsedDate
+					}
+				}
+			}
+			if author, ok := metaData["author"]; ok {
+				if authorMap, ok := author.(map[string]interface{}); ok {
+					if name, ok := authorMap["name"]; ok {
+						if nameStr, ok := name.(string); ok {
+							post.Author.Name = nameStr
+						}
+					}
+					if email, ok := authorMap["email"]; ok {
+						if emailStr, ok := email.(string); ok {
+							post.Author.Email = emailStr
+						}
+					}
+				} else if authorStr, ok := author.(string); ok {
+					post.Author.Name = authorStr
+				}
+			}
+			if email, ok := metaData["email"]; ok {
+				if emailStr, ok := email.(string); ok {
+					post.Author.Email = emailStr
+				}
+			}
+			if description, ok := metaData["description"]; ok {
+				if descriptionStr, ok := description.(string); ok {
+					post.Description = descriptionStr
+				}
+			}
+			if category, ok := metaData["category"]; ok {
+				if categoryStr, ok := category.(string); ok {
+					post.Category = categoryStr
+				}
+			}
+		}
+
 		if post.Slug == "" {
 			post.Slug = strings.TrimSuffix(filepath.Base(file), ".md")
 		}
-		posts = append(posts, post)
+
+		post.Content = template.HTML(buf.String())
+		posts[post.Slug] = post
 	}
 	return posts
 }
