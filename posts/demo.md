@@ -1,14 +1,11 @@
-+++
-title = "Demo"
-description = "This is a demo blog post"
-date = 2025-06-27
-
-[author]
-name = "zac"
-email = "contact@binx.page"
-+++
-
-This is a demo blog post!
+---
+title: "Demo"
+description: "This is a demo blog post"
+date: 2025-06-27
+category: "demo"
+author: "Zac"
+email: "contact@binx.page"
+---
 
 # Markdown Test Page
 
