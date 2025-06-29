@@ -25,6 +25,8 @@ var postCache map[string]Post
 var tmplPost *template.Template
 var tmplIndex *template.Template
 var tmplAbout *template.Template
+var tmplBlog *template.Template
+var tmplContact *template.Template
 var baseDir string
 var devMode bool
 
@@ -42,6 +44,8 @@ func init() {
 	tmplPost = template.Must(template.ParseFiles(filepath.Join(baseDir, "templates/post.gohtml")))
 	tmplIndex = template.Must(template.ParseFiles(filepath.Join(baseDir, "templates/index.gohtml")))
 	tmplAbout = template.Must(template.ParseFiles(filepath.Join(baseDir, "templates/about.gohtml")))
+	tmplBlog = template.Must(template.ParseFiles(filepath.Join(baseDir, "templates/blog.gohtml")))
+	tmplContact = template.Must(template.ParseFiles(filepath.Join(baseDir, "templates/contact.gohtml")))
 }
 
 func main() {
@@ -51,6 +55,8 @@ func main() {
 	mux.HandleFunc("GET /blog/{slug}", PostHandler)
 	mux.HandleFunc("GET /", IndexHandler)
 	mux.HandleFunc("GET /about", AboutHandler)
+	mux.HandleFunc("GET /blog", BlogHandler)
+	mux.HandleFunc("GET /contact", ContactHandler)
 	mux.HandleFunc("GET /favicon.ico", GetFavicon)
 
 	fs := http.FileServer(http.Dir(filepath.Join(baseDir, "static")))
@@ -91,6 +97,12 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	sort.Slice(posts, func(i, j int) bool {
 		return posts[i].Date.After(posts[j].Date)
 	})
+
+	// recent posts
+	if len(posts) > 3 {
+		posts = posts[:3]
+	}
+
 	data := struct {
 		Title       string
 		Description string
@@ -108,6 +120,37 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 
 func AboutHandler(w http.ResponseWriter, r *http.Request) {
 	err := tmplAbout.Execute(w, nil)
+	if err != nil {
+		http.Error(w, "Error executing template", http.StatusInternalServerError)
+	}
+}
+
+func BlogHandler(w http.ResponseWriter, r *http.Request) {
+	var posts []Post
+	for _, post := range postCache {
+		posts = append(posts, post)
+	}
+	sort.Slice(posts, func(i, j int) bool {
+		return posts[i].Date.After(posts[j].Date)
+	})
+
+	data := struct {
+		Title       string
+		Description string
+		Posts       []Post
+	}{
+		Title:       "Blog | BinxBytes",
+		Description: "Thoughts, tutorials, and explorations in technology and development.",
+		Posts:       posts,
+	}
+	err := tmplBlog.Execute(w, data)
+	if err != nil {
+		http.Error(w, "Error executing template", http.StatusInternalServerError)
+	}
+}
+
+func ContactHandler(w http.ResponseWriter, r *http.Request) {
+	err := tmplContact.Execute(w, nil)
 	if err != nil {
 		http.Error(w, "Error executing template", http.StatusInternalServerError)
 	}

@@ -7,10 +7,10 @@
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="preload" href="/static/css/styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="/static/css/styles.css"></noscript>
-  <title>{{.Title}} | binx.page</title>
+  <title>Contact | binx.page</title>
 </head>
 <body style="background-color: #121313">
-<!-- TODO: Add a div for Return to Blog Home, maybe a return to homepage? -->
+  <!-- Copy the nav from index.gohtml here for consistency -->
   <nav>
     <div class="logo">
       <span><a href="/">binx.page</a></span>
@@ -25,32 +25,16 @@
     </div>
   </nav>
   <div class="content-container">
-    <header class="post-header">
-      <h1 class="post-title">{{.Title}}</h1>
-      {{with .FormattedDate}}
-      <div class="post-meta">
-        <span class="post-date">{{.}}</span>
-        {{with $.Author}}
-        <span>•</span>
-        <span>By <a href="mailto:{{.Email}}">{{.Name}}</a></span>
-        {{end}}
-      </div>
-      {{end}}
-      {{with .Author}}
-      {{if not $.FormattedDate}}
-      <div class="post-author">
-        <p>By <a href="mailto:{{.Email}}">{{.Name}}</a></p>
-      </div>
-      {{end}}
-      {{end}}
+    <header>
+      <h1>Contact</h1>
     </header>
     <main>
-      <article class="prose">
-        {{.Content}}
-      </article>
+      <div class="prose">
+        <p>This is the contact page. Which I might fill out. Eventually.</p>
+      </div>
     </main>
   </div>
-  <footer class="blog-footer">
+  <footer>
     <p>© 2025 Zac Bagley</p>
   </footer>
 </body>

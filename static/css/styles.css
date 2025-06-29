@@ -14,6 +14,15 @@ body {
   background-color: #121313;
 }
 
+/* General heading styles for pages */
+h1 {
+  font-size: 2rem;
+  font-weight: 500;
+  margin: 0 0 1rem 0;
+  line-height: 1.2;
+  color: #dfdbd5;
+}
+
 /* Navigation */
 nav {
   display: flex;
@@ -199,6 +208,7 @@ nav ul li a:hover {
   font-size: 0.8rem;
   color: #7b7269;
   display: flex;
+  margin-bottom: 0.5rem;
   align-items: center;
   gap: 0.5rem;
 }
@@ -215,7 +225,7 @@ nav ul li a:hover {
   color: #938d87;
   font-size: 1.1rem;
   padding-left: 1rem;
-  margin-bottom: 2.5rem;
+  margin-bottom: 3rem;
   line-height: 1.6;
 }
 
@@ -478,6 +488,15 @@ footer {
 
 .prose a:hover {
   color: #93c5fd;
+}
+
+/* ========================================
+   Content Visibility
+   Huge fan of css flashing /s
+   ======================================== */
+html {
+  visibility: visible;
+  opacity: 1;
 }
 
 /* ========================================
