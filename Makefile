@@ -1,18 +1,36 @@
-# Makefile for building Go Lambda binary for AWS SAM
+# ---------------------------------------------
+# binxbytes Makefile
+# ---------------------------------------------
 
-.PHONY: build clean help
+FUNCTION_NAME = binxbytes
+
+.PHONY: help dev build build-lambda package deploy clean
 
 help:
 	@echo "Available commands:"
-	@echo "  make run    - Run dev server locally"
-	@echo "  make build  - Build the Go binary for Lambda"
-	@echo "  make clean  - Remove the built binary"
+	@echo "  make dev            - Run local dev server"
+	@echo "  make build          - Build local binary"
+	@echo "  make build-lambda   - Build Linux binary for Lambda (ARM64)"
+	@echo "  make package        - Zip binary + static folders"
+	@echo "  make deploy         - Deploy ZIP to Lambda"
+	@echo "  make clean          - Remove built files"
 
-run:
+dev:
 	go run main.go -dev
 
 build:
-	GOOS=linux GOARCH=arm64 go build -o bootstrap
+	go build -o binxbytes main.go
+
+build-lambda:
+	GOOS=linux GOARCH=arm64 go build -o bootstrap main.go
+
+package: build-lambda
+	zip -r function.zip bootstrap static/ blog/ templates/
+
+deploy: package
+	aws lambda update-function-code \
+		--function-name $(FUNCTION_NAME) \
+		--zip-file fileb://function.zip
 
 clean:
-	rm -f bootstrap
+	rm -f bootstrap function.zip binxbytes
