@@ -67,11 +67,11 @@ nav ul li a:hover {
 
 /* ========================================
    HOME PAGE SPECIFIC STYLES
-   (Used specifically in index.gohtml template)
+   (index.gohtml)
    ======================================== */
 
 /* Home container - Main layout for home page */
-.home-container {
+.content-container {
   max-width: 60rem;
   margin: 5rem auto 0 auto;
   padding: 0 1.5rem;
@@ -512,7 +512,7 @@ footer {
     padding: 0 0.5rem;
   }
   
-  .home-container {
+  .content-container {
     padding: 0 1rem 1rem 1rem;
   }
 
