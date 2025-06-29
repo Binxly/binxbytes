@@ -13,6 +13,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/akrylysov/algnhsa"
+
 	"github.com/yuin/goldmark"
 	highlighting "github.com/yuin/goldmark-highlighting/v2"
 	meta "github.com/yuin/goldmark-meta"
@@ -46,7 +48,7 @@ func main() {
 	postCache = LoadAllPosts()
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("GET /posts/{slug}", PostHandler)
+	mux.HandleFunc("GET /blog/{slug}", PostHandler)
 	mux.HandleFunc("GET /", IndexHandler)
 	mux.HandleFunc("GET /about", AboutHandler)
 	mux.HandleFunc("GET /favicon.ico", GetFavicon)
@@ -54,9 +56,17 @@ func main() {
 	fs := http.FileServer(http.Dir(filepath.Join(baseDir, "static")))
 	mux.Handle("GET /static/", http.StripPrefix("/static/", fs))
 
-	err := http.ListenAndServe(":3030", mux)
-	if err != nil {
-		log.Fatal(err)
+	// -dev flag for local, otherwise needs algnhsa for lambda
+	if devMode {
+		port := os.Getenv("PORT")
+		if port == "" {
+			port = "3000"
+		}
+		log.Printf("Local dev on :%s", port)
+		log.Fatal(http.ListenAndServe(":"+port, mux))
+	} else {
+		log.Printf("Running with algnhsa")
+		algnhsa.ListenAndServe(mux, nil)
 	}
 }
 
@@ -140,7 +150,7 @@ func LoadAllPosts() map[string]Post {
 			),
 		),
 	)
-	postsDir := filepath.Join(baseDir, "posts")
+	postsDir := filepath.Join(baseDir, "blog")
 	files, err := filepath.Glob(filepath.Join(postsDir, "*.md"))
 	if err != nil {
 		log.Printf("Error globbing md files: %v", err)

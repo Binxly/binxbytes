@@ -72,7 +72,7 @@
               {{ if .Category }}<span class="post-separator">•</span><span class="home-post-category">{{ .Category }}</span>{{ end }}
             </div>
             <h3 class="home-post-title">
-              <a href="/posts/{{ .Slug }}" class="home-post-link">{{ .Title }}</a>
+              <a href="/blog/{{ .Slug }}" class="home-post-link">{{ .Title }}</a>
             </h3>
             {{ if .Description }}<p class="home-post-description">{{ .Description }}</p>{{ end }}
           </div>
@@ -81,6 +81,7 @@
     </section>
   </div>
   <footer>
+  <!-- TODO: Socials? -->
     <p>© 2025 Zac Bagley</p>
   </footer>
 </body>
