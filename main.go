@@ -13,6 +13,8 @@ import (
 	"strings"
 	"time"
 
+	// "github.com/akrylysov/algnhsa"
+
 	"github.com/yuin/goldmark"
 	highlighting "github.com/yuin/goldmark-highlighting/v2"
 	meta "github.com/yuin/goldmark-meta"
@@ -54,10 +56,13 @@ func main() {
 	fs := http.FileServer(http.Dir(filepath.Join(baseDir, "static")))
 	mux.Handle("GET /static/", http.StripPrefix("/static/", fs))
 
-	err := http.ListenAndServe(":3030", mux)
-	if err != nil {
-		log.Fatal(err)
-	}
+	// if devMode {
+	// 	log.Fatal(http.ListenAndServe(":3000", mux))
+	// } else {
+	// 	log.Fatal(algnhsa.ListenAndServe(mux, nil))
+	// }
+
+	log.Fatal(http.ListenAndServe(":3000", mux))
 }
 
 func PostHandler(w http.ResponseWriter, r *http.Request) {
