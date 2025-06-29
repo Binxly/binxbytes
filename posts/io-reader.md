@@ -1,12 +1,9 @@
-+++
-title = "Code snippet testing"
-description = "In this article we test code block rendering"
-date = 1999-06-10
-
-[author]
-name = "zac"
-email = "contact@binx.page"
-+++
+---
+title: "Code snippet testing"
+description: "In this article we test code block rendering"
+date: 1999-06-10
+author: "zac"
+---
 
 # h1 What is `io.Reader`
 
