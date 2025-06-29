@@ -56,6 +56,7 @@ func main() {
 	fs := http.FileServer(http.Dir(filepath.Join(baseDir, "static")))
 	mux.Handle("GET /static/", http.StripPrefix("/static/", fs))
 
+	// -dev flag for local, otherwise needs algnhsa for lambda
 	if devMode {
 		port := os.Getenv("PORT")
 		if port == "" {
