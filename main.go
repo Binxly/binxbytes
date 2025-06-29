@@ -91,6 +91,12 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	sort.Slice(posts, func(i, j int) bool {
 		return posts[i].Date.After(posts[j].Date)
 	})
+
+	// recent posts
+	if len(posts) > 3 {
+		posts = posts[:3]
+	}
+
 	data := struct {
 		Title       string
 		Description string
