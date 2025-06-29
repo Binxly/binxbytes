@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
+  <link rel="preload" href="/static/css/styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/static/css/styles.css"></noscript>
+  <title>{{ .Title }}</title>
+  <meta name="description" content="{{ .Description }}">
+</head>
+<body>
+  <nav>
+    <div class="logo">
+      <span><a href="/">binx.page</a></span>
+    </div>
+    <div>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/blog">Blog</a></li>
+        <li><a href="/contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+  <div class="content-container">
+    <section class="intro-section">
+      <h1 class="intro-title">Blog</h1>
+      <p class="intro-text">Thoughts on technology, learning, and building things.</p>
+    </section>
+    
+    <section class="home-posts-section">
+      <div class="home-posts-list">
+        {{ range .Posts }}
+          <div class="home-post-item">
+            <div class="home-post-meta">
+              <time class="home-post-date">{{ .FormattedDate }}</time>
+              {{ if .Category }}<span class="post-separator">•</span><span class="home-post-category">{{ .Category }}</span>{{ end }}
+            </div>
+            <h3 class="home-post-title">
+              <a href="/blog/{{ .Slug }}" class="home-post-link">{{ .Title }}</a>
+            </h3>
+            {{ if .Description }}<p class="home-post-description">{{ .Description }}</p>{{ end }}
+          </div>
+        {{ end }}
+      </div>
+    </section>
+  </div>
+  <footer>
+    <p>© 2025 Zac Bagley</p>
+  </footer>
+</body>
+</html>
