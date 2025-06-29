@@ -190,7 +190,7 @@ nav ul li a:hover {
 }
 
 .home-post-link:hover {
-  color: #78716c; /* text-stone-600 */
+  color: #78716c;
   border-bottom: 1.5px solid #89847f;
   transition: color 0.4s ease, border-bottom 0.4s ease;
 }
@@ -229,64 +229,7 @@ footer {
 }
 
 /* ========================================
-   LEGACY STYLES (keeping for other pages)
-   ======================================== */
-
-/* Container - General layout container (for other pages) */
-.container {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-
-/* Header - General page headers (for other pages) */
-header {
-  text-align: center;
-  margin: 2rem 0;
-}
-
-header h1 {
-  font-size: 2.25rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
-}
-
-header p {
-  color: #6b7280;
-  margin-top: 0.5rem;
-}
-
-/* Main content - General main content area (for other pages) */
-main {
-  margin: 2rem 0;
-}
-
-/* Posts list - General list styling for index page (legacy) */
-main ul {
-  list-style: none;
-  padding-left: 0;
-}
-
-main ul li {
-  margin-bottom: 0.5rem;
-}
-
-main ul li a {
-  color: #fff !important;
-  text-decoration: none !important;
-  font-weight: 400;
-  font-size: 1.1rem;
-  transition: text-decoration 0.2s;
-}
-
-main ul li a:hover {
-  text-decoration: underline !important;
-}
-
-/* ========================================
    BLOG POST SPECIFIC STYLES
-   (Used specifically in post.gohtml template)
    ======================================== */
 
 /* Blog post content container */
