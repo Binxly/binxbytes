@@ -14,7 +14,7 @@ body {
   font-family: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   line-height: 1.6;
   color: #374151;
-  background-color: #ffffff;
+  background-color: #121313;
 }
 
 /* Navigation */
@@ -22,8 +22,8 @@ nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #18181b; /* bg-zinc-900 */
-  padding: 1.5rem; /* p-6 */
+  background-color: #181919; /* bg-zinc-900 */
+  padding: 1rem; /* p-6 */
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
 }
 
@@ -31,15 +31,16 @@ nav .logo {
   display: flex;
   align-items: center;
   flex-shrink: 0;
-  color: white; /* text-white */
+  color: #bbae9f; /* text-white */
   margin-right: 1.5rem; /* mr-6 */
+  margin-left: 1.5rem;
 }
 
 nav .logo a {
   font-weight: 600; /* font-semibold */
   font-size: 1.25rem; /* text-xl */
   letter-spacing: -0.025em; /* tracking-tight */
-  color: white;
+  color: #e8e3dc;
   text-decoration: none;
 }
 
@@ -53,11 +54,11 @@ nav ul li {
 }
 
 nav ul li:last-child {
-  margin-right: 0;
+  margin-right: 1.5rem;
 }
 
 nav ul li a {
-  color: #d4d4d8; /* text-zinc-300 */
+  color: #bbae9f; /* text-zinc-300 */
   padding: 0.5rem 0.75rem; /* px-3 py-2 */
   border-radius: 0.25rem; /* rounded */
   text-decoration: none;
@@ -68,7 +69,186 @@ nav ul li a:hover {
   background-color: #3f3f46; /* hover:bg-zinc-700 */
 }
 
-/* Container - General layout container */
+/* ========================================
+   HOME PAGE SPECIFIC STYLES
+   (Used specifically in index.gohtml template)
+   ======================================== */
+
+/* Home container - Main layout for home page */
+.home-container {
+  max-width: 60rem; /* max-w-2xl */
+  margin: 0 auto; /* mx-auto */
+  padding: 0 1.5rem 4rem 1.5rem; /* px-6 py-16 */
+}
+
+/* Intro section styling */
+.intro-section {
+  margin-bottom: 4rem;
+}
+
+.intro-title {
+  font-size: 2rem; /* text-3xl */
+  font-weight: 500; /* font-medium */
+  color: #dfdbd5; /* text-stone-900 */
+  margin-top: 5rem;
+  margin-bottom: 1rem; /* mb-4 */
+  line-height: 1.2;
+}
+
+.intro-text {
+  font-size: 1.25rem; /* text-lg */
+  color: #bbae9f; /* text-stone-600 */
+  line-height: 1.7; /* leading-relaxed */
+}
+
+.intro-text:last-of-type {
+  margin-bottom: 0;
+}
+
+/* Section titles */
+.section-title {
+  font-size: 1.75rem; /* text-xl */
+  font-weight: 500; /* font-medium */
+  color: #dfdbd5; /* text-stone-900 */
+  margin-bottom: 2rem; /* mb-8 */
+  line-height: 1.3;
+}
+
+/* Projects section */
+.projects-section {
+  margin-bottom: 5rem; /* mb-20 */
+}
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem; /* gap-8 */
+  margin-left: 1rem;
+}
+
+/* Project cards */
+.project-card {
+  transition: transform 0.2s ease;
+  /* text-align: center; */
+}
+
+.project-card:hover {
+  transform: translateY(-5px);
+}
+
+.project-title {
+  font-size: 1.25rem;
+  font-weight: 500; /* font-medium */
+  color: #dfdbd5; /* text-stone-900 */
+  margin-bottom: 0.25rem; /* mb-1 */
+  line-height: 1.3;
+}
+
+.project-link {
+  color: #dfdbd5; /* text-stone-900 */
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.project-link:hover {
+  color: #78716c; /* text-stone-600 */
+}
+
+.project-description {
+  font-size: 1rem; /* text-sm */
+  color: #938d87; /* text-stone-600 */
+  margin-bottom: 0.5rem; /* mb-2 */
+  margin-left: 1rem;
+  /* margin-right: 3rem; */
+  line-height: 1.5;
+}
+
+.project-tech {
+  font-size: 0.8rem; /* text-sm */
+  color: #7b7269; /* text-stone-500 */
+  line-height: 1.4;
+}
+
+/* Posts section */
+.home-posts-section {
+  margin-bottom: 2rem;
+}
+
+.home-posts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.home-post-item {
+  margin-left: 1rem;
+  padding: 0;
+  background: none;
+  border: none;
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.home-post-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #dfdbd5;
+  margin: 0.1rem 0 0.2rem 0;
+  line-height: 1.2;
+}
+
+.home-post-link {
+  color: #dfdbd5;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.home-post-link:hover {
+  color: #78716c; /* text-stone-600 */
+  border-bottom: 1.5px solid #000000;
+}
+
+.home-post-meta {
+  font-size: 1rem;
+  color: #7b7269;
+  margin-bottom: 0.1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.home-post-separator {
+  color: #d6d3d1;
+}
+
+.home-post-category {
+  color: #7b7269;
+}
+
+.home-post-description {
+  color: #938d87;
+  font-size: 1.1rem;
+  margin-left: 1rem;
+  margin-top: 0.1rem;
+  margin-bottom: 2.5rem;
+  line-height: 1.6;
+}
+
+/* Footer - General page footer */
+footer {
+  text-align: center; /* text-center */
+  margin-top: auto;
+  color: #7b7269; /* text-gray-400 */
+}
+
+/* ========================================
+   LEGACY STYLES (keeping for other pages)
+   ======================================== */
+
+/* Container - General layout container (for other pages) */
 .container {
   width: 100%;
   max-width: 1200px;
@@ -76,7 +256,7 @@ nav ul li a:hover {
   padding: 0 1rem;
 }
 
-/* Header - General page headers */
+/* Header - General page headers (for other pages) */
 header {
   text-align: center; /* text-center */
   margin: 2rem 0; /* my-8 */
@@ -93,12 +273,12 @@ header p {
   margin-top: 0.5rem; /* mt-2 */
 }
 
-/* Main content - General main content area */
+/* Main content - General main content area (for other pages) */
 main {
   margin: 2rem 0;
 }
 
-/* Posts list - General list styling for index page */
+/* Posts list - General list styling for index page (legacy) */
 main ul {
   list-style: none;
   padding-left: 0;
@@ -120,14 +300,6 @@ main ul li a:hover {
   text-decoration: underline !important;
 }
 
-/* Footer - General page footer */
-footer {
-  text-align: center; /* text-center */
-  margin-top: 3rem; /* mt-12 */
-  color: #9ca3af; /* text-gray-400 */
-  padding: 2rem 0;
-}
-
 /* ========================================
    BLOG POST SPECIFIC STYLES
    (Used specifically in post.gohtml template)
@@ -139,7 +311,7 @@ footer {
   margin: 0 auto;
   font-size: 1.125rem;
   line-height: 1.8;
-  color: #374151;
+  color: #bbae9f;
 }
 
 /* Blog post header styling */
@@ -147,14 +319,14 @@ footer {
   text-align: center;
   margin-bottom: 4rem;
   padding-bottom: 2.5rem;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid #3f3f46;
 }
 
 .post-title {
   font-size: 2.75rem;
   font-weight: 700;
   line-height: 1.15;
-  color: #111827;
+  color: #dfdbd5;
   margin-bottom: 1.5rem;
   letter-spacing: -0.02em;
 }
@@ -164,13 +336,13 @@ footer {
   justify-content: center;
   align-items: center;
   gap: 1rem;
-  color: #6b7280;
+  color: #7b7269;
   font-size: 0.9rem;
   margin-bottom: 1rem;
 }
 
 .post-date {
-  color: #6b7280;
+  color: #7b7269;
 }
 
 .post-author {
@@ -179,14 +351,14 @@ footer {
 }
 
 .post-author p {
-  color: #6b7280;
+  color: #7b7269;
   font-size: 0.9rem;
 }
 
 .post-meta .post-author a,
 .post-meta a,
 .post-author a {
-  color: #6b7280 !important;
+  color: #7b7269 !important;
   text-decoration: none !important;
   font-weight: 500;
   cursor: pointer;
@@ -194,7 +366,7 @@ footer {
 .post-meta .post-author a:hover,
 .post-meta a:hover,
 .post-author a:hover {
-  color: #374151 !important;
+  color: #dfdbd5 !important;
   text-decoration: none !important;
 }
 
@@ -202,7 +374,7 @@ footer {
 .prose h1 {
   font-size: 2rem;
   font-weight: 700;
-  color: #111827;
+  color: #dfdbd5;
   margin: 3rem 0 1.5rem 0;
   line-height: 1.25;
   letter-spacing: -0.02em;
@@ -211,7 +383,7 @@ footer {
 .prose h2 {
   font-size: 1.625rem;
   font-weight: 600;
-  color: #111827;
+  color: #dfdbd5;
   margin: 2.5rem 0 1rem 0;
   line-height: 1.3;
   letter-spacing: -0.01em;
@@ -220,7 +392,7 @@ footer {
 .prose h3 {
   font-size: 1.375rem;
   font-weight: 600;
-  color: #111827;
+  color: #dfdbd5;
   margin: 2rem 0 0.75rem 0;
   line-height: 1.3;
 }
@@ -228,14 +400,14 @@ footer {
 .prose h4 {
   font-size: 1.125rem;
   font-weight: 600;
-  color: #111827;
+  color: #dfdbd5;
   margin: 1.5rem 0 0.5rem 0;
   line-height: 1.3;
 }
 
 .prose p {
   margin-bottom: 1.75rem;
-  color: #374151;
+  color: #bbae9f;
   text-align: justify;
   text-align-last: left;
 }
@@ -255,7 +427,7 @@ footer {
 
 .prose li {
   margin-bottom: 0.75rem;
-  color: #374151;
+  color: #bbae9f;
   line-height: 1.6;
 }
 
@@ -265,8 +437,8 @@ footer {
   padding: 1.5rem 2rem;
   margin: 2.5rem 0;
   font-style: italic;
-  color: #4b5563;
-  background-color: #f8fafc;
+  color: #938d87;
+  background-color: #1a1a1a;
   border-radius: 0.375rem;
   font-size: 1.05rem;
   line-height: 1.7;
@@ -274,12 +446,12 @@ footer {
 
 .prose strong {
   font-weight: 600;
-  color: #111827;
+  color: #dfdbd5;
 }
 
 .prose em {
   font-style: italic;
-  color: #4b5563;
+  color: #938d87;
 }
 
 /* Blog post code styling */
@@ -298,8 +470,8 @@ footer {
 }
 
 .prose code {
-  background-color: #f1f5f9;
-  color: #dc2626;
+  background-color: #2a2a2a;
+  color: #f87171;
   padding: 0.2rem 0.4rem;
   border-radius: 0.25rem;
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
@@ -338,7 +510,7 @@ footer {
   border-collapse: collapse;
   margin: 2.5rem 0;
   font-size: 0.875rem;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #3f3f46;
   border-radius: 0.5rem;
   overflow: hidden;
 }
@@ -347,30 +519,30 @@ footer {
 .prose td {
   padding: 0.875rem;
   text-align: left;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid #3f3f46;
 }
 
 .prose th {
-  background-color: #f8fafc;
+  background-color: #1a1a1a;
   font-weight: 600;
-  color: #111827;
+  color: #dfdbd5;
 }
 
 .prose tr:hover {
-  background-color: #f8fafc;
+  background-color: #2a2a2a;
 }
 
 /* Blog post horizontal rule styling */
 .prose hr {
   border: none;
   height: 1px;
-  background-color: #e5e7eb;
+  background-color: #3f3f46;
   margin: 3.5rem 0;
 }
 
 /* Blog post link styling */
 .prose a {
-  color: #3b82f6;
+  color: #60a5fa;
   text-decoration: underline;
   text-decoration-thickness: 2px;
   text-underline-offset: 2px;
@@ -378,7 +550,7 @@ footer {
 }
 
 .prose a:hover {
-  color: #1d4ed8;
+  color: #93c5fd;
 }
 
 /* ========================================
@@ -390,6 +562,19 @@ footer {
     flex-direction: column;
     gap: 1rem;
   }
+
+  nav ul li:last-child {
+    margin-right: 0rem;
+  }
+  
+  nav .logo {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    color: #bbae9f; /* text-white */
+    margin-right: 1.5rem; /* mr-6 */
+    margin-left: 1.5rem;
+  }
   
   nav ul {
     flex-wrap: wrap;
@@ -398,6 +583,116 @@ footer {
   
   .container {
     padding: 0 0.5rem;
+  }
+  
+  .home-container {
+    padding: 0 1rem 3rem 1rem;
+  }
+
+  .intro-section {
+    margin-bottom: 2.5rem;
+  }
+  
+  .intro-title {
+    font-size: 1.5rem;
+    margin-top: 2.5rem;
+  }
+  
+  .intro-text {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .section-title {
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .projects-section {
+    margin-bottom: 2.5rem;
+  }
+  
+  .projects-grid {
+    gap: 2rem;
+  }
+
+  .project-title {
+    font-size: 1.1rem;
+  }
+
+  .project-description {
+    font-size: 1rem;
+  }
+
+  .project-tech {
+    font-size: 0.8rem;
+  }
+
+  .home-posts-section {
+    margin-bottom: 1rem;
+  }
+  
+  .home-posts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .home-post-item {
+    margin-left: 1rem;
+    padding: 0;
+    background: none;
+    border: none;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+  
+  .home-post-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #dfdbd5;
+    margin: 0.1rem 0 0.2rem 0;
+    line-height: 1.2;
+  }
+  
+  .home-post-link {
+    color: #dfdbd5;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  
+  .home-post-link:hover {
+    color: #78716c; /* text-stone-600 */
+    border-bottom: 1.5px solid #000000;
+  }
+  
+  .home-post-meta {
+    font-size: 0.8rem;
+    color: #7b7269;
+    margin-bottom: 0.1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .home-post-separator {
+    color: #d6d3d1;
+  }
+  
+  .home-post-category {
+    color: #7b7269;
+  }
+  
+  .home-post-description {
+    color: #938d87;
+    font-size: 1rem;
+    margin-left: 1rem;
+    margin-top: 0.1rem;
+    margin-bottom: 2rem;
+    line-height: 1.6;
   }
   
   header h1 {
@@ -427,5 +722,22 @@ footer {
   .prose pre {
     padding: 1rem;
     font-size: 0.75rem;
+  }
+  
+  .post-title {
+    font-size: 1.1rem;
+  }
+  .post-description {
+    font-size: 0.8rem;
+  }
+  .post-item {
+    margin-bottom: 1.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .projects-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
   }
 } 
