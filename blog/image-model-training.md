@@ -1,9 +1,12 @@
 ---
+
 title: 'KohyaSS: GenAI Image Model Training'
+description: "A collection of my notes on training generative image models when using the KohyaSS repository."
 date: '2024-05-12'
 category: 'notes'
-excerpt: 'A collection of my notes on training generative image models when using the KohyaSS repository.'
-slug: 'image-model-training'
+author: "Zac"
+email: "contact@binx.page"
+
 ---
 
 # GenAI Image Model Training

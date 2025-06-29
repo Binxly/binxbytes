@@ -4,7 +4,8 @@ title: "Creating a PKM Stack - My Approach After 2 Years"
 description: "Personal Knowledge Management: What worked, what didn't, and how to stop wasting time."
 date: "2025-04-04"
 category: "thoughts"
-author: "zac"
+author: "Zac"
+email: "contact@binx.page"
 
 ---
 

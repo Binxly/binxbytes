@@ -1,9 +1,12 @@
 ---
+
 title: 'Demystifying CNNs - How Computers "See"'
-date: '2024-11-27'
-category: 'edu'
-excerpt: 'Exploring the architecture of CNNs and (basically) how they work.'
-slug: 'demystifying-cnns'
+description: "Personal Knowledge Management: What worked, what didn't, and how to stop wasting time." 
+date: "2024-11-27"
+category: "edu"
+author: "Zac"
+email: "contact@binx.page"
+
 ---
 
 ## The Rise of GenAI

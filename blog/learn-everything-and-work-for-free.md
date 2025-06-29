@@ -1,9 +1,12 @@
 ---
+
 title: "Learn Everything and Work for Free"
+description: "My thoughts on the state of the job market for junior and entry-level developers in 2025."
 date: "2025-06-24"
 category: "thoughts"
-excerpt: "My thoughts on the state of the job market for junior and entry-level developers in 2025."
-slug: "learn-everything-and-work-for-free"
+author: "Zac"
+email: "contact@binx.page"
+
 ---
 
 After losing my job earlier this year (thanks, admin), I knew that my re-entry into the job market wouldn't be an easy one. While I have a ton of experience working with open-source deep learning tech (_cough_ AI remains a huge buzzword in today's industry), and bottomless ambition to grow as a developer, the economic and geopolitical climate has many companies in the private sector clutching their pearls. The promising companies that my friends were once advertising to me have almost entirely gone under, and the ones I'd kept in mind are now in dire straits, with strong hiring freezes in effect due to an economy in turmoil. To top it all off, job listings today rarely make sense, as it seems every HR department is scrambling — with non-technical people attempting to describe / begin the recruitment process for technical positions — and relying increasingly on automated software for resume reviews.

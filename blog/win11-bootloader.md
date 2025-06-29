@@ -1,9 +1,12 @@
 ---
+
 title: 'Ghosts in the EFI - The Jank of The Win11 Installer'
+description: 'Resolving problems with EFI partitions during a faulty Windows 11 installation, in a dual boot system.'
 date: '2025-04-24'
 category: 'edu'
-excerpt: 'Resolving problems with EFI partitions in a dual boot system.'
-slug: 'win11-bootloader'
+author: Zac
+email: contact@binx.page
+
 ---
 
 Installing Windows *should* be easy, right? I mean, I've done it many dozens of times—both during my work as a technician, as well as at home on my various machines. Yet every so often, Windows Boot Manager decides to throw you into a blue-screen hellscape, leaving you chasing ghost partitions for hours instead of getting back to work.

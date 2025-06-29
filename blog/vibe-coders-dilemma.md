@@ -1,9 +1,11 @@
 ---
-title: The Vibe-Coder's Dilemma – How AI Is Dangerous for Juniors and What To Do About It
-date: 2025-03-18
-category: thoughts
-excerpt: The dangers of a recent trend for newcomers in software development.
-slug: vibe-coders-dilemma
+
+title: "The Vibe-Coder's Dilemma – How AI Is Dangerous for Juniors and What To Do About It"
+description: "The dangers of a recent trend for newcomers in software development."
+date: "2025-03-18"
+category: "thoughts"
+author: Zac
+email: contact@binx.page
 
 ---
 
