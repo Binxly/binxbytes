@@ -54,6 +54,7 @@ func main() {
 	mux.HandleFunc("GET /", IndexHandler)
 	mux.HandleFunc("GET /about", AboutHandler)
 	mux.HandleFunc("GET /blog", BlogHandler)
+	mux.HandleFunc("GET /contact", ContactHandler)
 	mux.HandleFunc("GET /favicon.ico", GetFavicon)
 
 	fs := http.FileServer(http.Dir(filepath.Join(baseDir, "static")))
@@ -141,6 +142,13 @@ func BlogHandler(w http.ResponseWriter, r *http.Request) {
 		Posts:       posts,
 	}
 	err := tmplBlog.Execute(w, data)
+	if err != nil {
+		http.Error(w, "Error executing template", http.StatusInternalServerError)
+	}
+}
+
+func ContactHandler(w http.ResponseWriter, r *http.Request) {
+	err := tmplAbout.Execute(w, nil)
 	if err != nil {
 		http.Error(w, "Error executing template", http.StatusInternalServerError)
 	}
