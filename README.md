@@ -1,6 +1,6 @@
 # BinxBytes
 
-BinxBytes is a simple static site and blog built with Go, deployed to AWS Lambda thanks to [algnhsa](https://github.com/akrylysov/algnhsa).
+BinxBytes is a simple static site and blog built with Go, deployed on AWS.
 
 ## Development
 
@@ -32,8 +32,8 @@ make clean
 
 ## Notes
 
-- `algnhsa` is used to run Go's standard standard `net/http` handler on Lambda.
+- `algnhsa` is used to run Go's standard `net/http` handler on Lambda.
 
-- Static files and blog posts are bundled with the binary, but need to change this so that posts and static files are hosted in a S3 bucket.
+- Static files and blog posts are bundled with the binary, but might change this so static files are hosted on S3.
 
-- Deployment uses the AWS CLI, will need changes for SAM or CloudFormation.
+- Deployment uses the AWS CLI, removed the use of SAM or CloudFormation.
