@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
   <link rel="preload" href="/static/css/styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="/static/css/styles.css"></noscript>
   <title>{{.Title}} | binx.page</title>
@@ -18,8 +19,8 @@
     <div>
       <ul>
         <li><a href="/">Home</a></li>
-        <li><a href="/about">About</a></li>
         <li><a href="/blog">Blog</a></li>
+        <li><a href="/about">About</a></li>
         <li><a href="/contact">Contact</a></li>
       </ul>
     </div>
@@ -50,8 +51,19 @@
       </article>
     </main>
   </div>
-  <footer class="blog-footer">
-    <p>© 2025 Zac Bagley</p>
+  <footer class="footer-content">
+    <div class="footer-content">
+      <div class="footer-nav">
+        <a href="/" class="footer-link">Home</a>
+        <a href="/blog" class="footer-link">Blog</a>
+        <a href="/about" class="footer-link">About</a>
+        <a href="https://github.com/Binxly/binxbytes" class="footer-link" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href="https://instagram.com/binx.ly" class="footer-link" target="_blank" rel="noopener noreferrer">Instagram</a>
+      </div>
+      <div class="footer-info">
+        <p>contact@binx.page | © 2025 Binx.Page</p>
+      </div>
+    </div>
   </footer>
 </body>
 </html>

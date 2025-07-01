@@ -231,15 +231,54 @@ nav ul li a:hover {
 
 /* Footer - General page footer */
 footer {
-  text-align: center;
+  width: 100%;
   border-top: 1px solid #3f3f46;
-  margin-top: 5rem;
-  padding: 2rem 0;
+  margin: 0 auto;
+  text-align: center;
+  font-size: 0.75rem;
+  padding: 4rem 0;
   color: #7b7269;
+}
+
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.footer-nav {
+  display: flex;
+  gap: 1rem;
+}
+
+.footer-link {
+  color: #7b7269;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-link:hover {
+  text-decoration: underline;
+  color: #bbae9f;
+}
+
+.footer-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.footer-info p {
+  text-align: center;
+  margin: 0;
 }
 
 /* ========================================
    BLOG POST SPECIFIC STYLES
+   (post.gohtml)
    ======================================== */
 
 /* Blog post content container */
@@ -501,7 +540,7 @@ html {
 
 /* ========================================
    RESPONSIVE DESIGN
-   (Applies to both general pages and blog posts)
+   TODO: Improvements needed
    ======================================== */
 @media (max-width: 768px) {
   nav {
@@ -562,8 +601,29 @@ html {
     gap: 2rem;
   }
 
+  .project-card {
+    transition: none;
+  }
+  
+  .project-card:hover {
+    transform: none;
+  }
+
   .project-title {
     font-size: 1.1rem;
+    border-bottom: 1.5px solid transparent;border-bottom: 1.5px solid transparent;
+  }
+
+  .project-link {
+    color: #dfdbd5;
+    text-decoration: none;
+    border-bottom: 1.5px solid transparent;
+  }
+  
+  .project-link:hover {
+    color: #dfdbd5;
+    border-bottom: 1.5px solid transparent;
+    transition: none;
   }
 
   .project-description {
@@ -606,12 +666,11 @@ html {
     color: #dfdbd5;
     text-decoration: none;
     border-bottom: 1.5px solid transparent;
-    transition: border-color 0.2s, color 0.2s;
   }
   
   .home-post-link:hover {
-    color: #78716c; /* text-stone-600 */
-    border-bottom: 1.5px solid #000000;
+    color: #78716c;
+    border-bottom: 1.5px solid transparent;
   }
   
   .home-post-meta {
@@ -667,26 +726,62 @@ html {
     font-size: 0.75rem;
   }
   
-  .post-title {
-    font-size: 1.1rem;
-  }
-  .post-description {
-    font-size: 0.8rem;
-  }
-  .post-item {
-    margin-bottom: 1.5rem;
+  /* Footer responsive styles */
+  footer {
+    padding: 2rem 0;
   }
   
-  .blog-footer {
-    margin-top: 2rem;
-    padding: 1.5rem 0;
-    font-size: 0.8rem;
+  .footer-content {
+    gap: 0.75rem;
   }
+  
+  .footer-nav {
+    gap: 0.75rem;
+  }
+  
+  .footer-info {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .footer-info p {
+    font-size: 0.7rem;
+  }
+  
 }
 
+/* ========================================
+   MOBILE STYLES
+   TODO: Improvements needed
+   ======================================== */
 @media (min-width: 768px) {
   .projects-grid {
     grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+
+  .project-card {
+    transition: none;
+  }
+  
+  .project-card:hover {
+    transform: none;
+  }
+
+  .project-link {
+    color: #dfdbd5;
+    text-decoration: none;
+    border-bottom: 1.5px solid transparent;
+  }
+  
+  .project-link:hover {
+    color: #dfdbd5;
+    border-bottom: 1.5px solid transparent;
+    transition: none;
+  }
+  
+  .footer-info {
+    flex-direction: row;
     gap: 2rem;
   }
 } 

@@ -21,7 +21,11 @@ import (
 	"github.com/yuin/goldmark/parser"
 )
 
+// throwing blog posts in memory - just load once at startup
+// LoadAllPosts() is called, parses them, and stores them in postCache
+// look up by slug
 var postCache map[string]Post
+
 var tmplPost *template.Template
 var tmplIndex *template.Template
 var tmplAbout *template.Template
@@ -68,21 +72,22 @@ func main() {
 		if port == "" {
 			port = "3000"
 		}
-		log.Printf("Local dev on :%s", port)
+		log.Printf("Local dev on http://localhost:%s", port)
 		log.Fatal(http.ListenAndServe(":"+port, mux))
 	} else {
-		log.Printf("Running with algnhsa")
 		algnhsa.ListenAndServe(mux, nil)
 	}
 }
 
 func PostHandler(w http.ResponseWriter, r *http.Request) {
 	slug := r.PathValue("slug")
+	// look up posts by slug in postCache
 	post, ok := postCache[slug]
 	if !ok {
 		http.NotFound(w, r)
 		return
 	}
+	// execute post.gohtml
 	err := tmplPost.Execute(w, post)
 	if err != nil {
 		http.Error(w, "Error executing template", http.StatusInternalServerError)
@@ -98,7 +103,7 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 		return posts[i].Date.After(posts[j].Date)
 	})
 
-	// recent posts
+	// puts a limit on recent posts
 	if len(posts) > 3 {
 		posts = posts[:3]
 	}
@@ -109,7 +114,7 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 		Posts       []Post
 	}{
 		Title:       "BinxBytes",
-		Description: "Welcome to BinxBytes! Explore my latest posts.",
+		Description: "Another dev blog on the internet.",
 		Posts:       posts,
 	}
 	err := tmplIndex.Execute(w, data)
@@ -140,7 +145,7 @@ func BlogHandler(w http.ResponseWriter, r *http.Request) {
 		Posts       []Post
 	}{
 		Title:       "Blog | BinxBytes",
-		Description: "Thoughts, tutorials, and explorations in technology and development.",
+		Description: "Thoughts on technology, learning, and building things.",
 		Posts:       posts,
 	}
 	err := tmplBlog.Execute(w, data)
