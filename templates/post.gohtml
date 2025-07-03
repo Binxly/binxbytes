@@ -9,6 +9,36 @@
   <link rel="preload" href="/static/css/styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="/static/css/styles.css"></noscript>
   <title>{{.Title}} | binx.page</title>
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://binx.page/blog/{{.Slug}}">
+  <meta property="og:title" content="{{.Title}}">
+  <meta property="og:description" content="{{.Description}}">
+  <meta property="og:site_name" content="binx.page">
+  <meta property="og:image" content="https://binx.page/static/favicon.ico">
+  <meta property="og:image:width" content="32">
+  <meta property="og:image:height" content="32">
+  {{with .Author}}
+  <meta property="article:author" content="{{.Name}}">
+  {{end}}
+  {{with .Date}}
+  <meta property="article:published_time" content="{{.Format "2006-01-02T15:04:05Z07:00"}}">
+  {{end}}
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:url" content="https://binx.page/blog/{{.Slug}}">
+  <meta name="twitter:title" content="{{.Title}}">
+  <meta name="twitter:description" content="{{.Description}}">
+  <meta name="twitter:image" content="https://binx.page/static/favicon.ico">
+  <meta name="twitter:creator" content="@BinxNet">
+  
+  <!-- Additional meta tags -->
+  <meta name="description" content="{{.Description}}">
+  {{with .Category}}
+  <meta name="keywords" content="{{.}}, technology, programming, blog">
+  {{end}}
 </head>
 <body style="background-color: #121313">
 <!-- TODO: Add a div for Return to Blog Home, maybe a return to homepage? -->
