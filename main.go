@@ -1,3 +1,6 @@
+// Package main provides a simple blog server that serves markdown posts
+// converted to HTML. It supports both local development and AWS Lambda deployment.
+// See Makefile for development, build and deployment instructions.
 package main
 
 import (
@@ -21,9 +24,9 @@ import (
 	"github.com/yuin/goldmark/parser"
 )
 
-// throwing blog posts in memory - just load once at startup
-// LoadAllPosts() is called, parses them, and stores them in postCache
-// look up by slug
+// NOTE: throwing blog posts in memory - just load once at startup
+// LoadAllPosts() is called, stores generated html in postCache
+// https://go.dev/blog/maps - look up by slug
 var postCache map[string]Post
 
 var tmplPost *template.Template
@@ -38,6 +41,8 @@ func init() {
 	flag.BoolVar(&devMode, "dev", false, "Run in development mode (use relative paths)")
 	flag.Parse()
 
+	// NOTE: use relative paths when the -dev flag is set
+	// otherwise, uses absolute paths, which may not work in dev
 	if devMode {
 		baseDir = "."
 	} else {
@@ -62,11 +67,13 @@ func main() {
 	mux.HandleFunc("GET /blog", BlogHandler)
 	mux.HandleFunc("GET /contact", ContactHandler)
 	mux.HandleFunc("GET /favicon.ico", GetFavicon)
+	mux.HandleFunc("GET /feed.xml", RSSHandler)
 
 	fs := http.FileServer(http.Dir(filepath.Join(baseDir, "static")))
 	mux.Handle("GET /static/", http.StripPrefix("/static/", fs))
 
-	// -dev flag for local, otherwise needs algnhsa for lambda
+	// NOTE: -dev flag for local development only
+	// without it, routes rely on algnhsa's Lambda adapter
 	if devMode {
 		port := os.Getenv("PORT")
 		if port == "" {
@@ -79,22 +86,28 @@ func main() {
 	}
 }
 
+// PostHandler handles requests for individual blog posts.
+// It looks up the post by slug in the postCache and renders it using the post template.
 func PostHandler(w http.ResponseWriter, r *http.Request) {
 	slug := r.PathValue("slug")
-	// look up posts by slug in postCache
+
+	// look up posts by slug in postCache map
 	post, ok := postCache[slug]
 	if !ok {
 		http.NotFound(w, r)
 		return
 	}
-	// execute post.gohtml
+
+	// execute post.gohtml template
 	err := tmplPost.Execute(w, post)
 	if err != nil {
 		http.Error(w, "Error executing template", http.StatusInternalServerError)
 	}
 }
 
-func IndexHandler(w http.ResponseWriter, r *http.Request) {
+// getSortedPosts returns a slice of all post structs sorted by date in descending order.
+// i.e. most recent posts first
+func getSortedPosts() []Post {
 	var posts []Post
 	for _, post := range postCache {
 		posts = append(posts, post)
@@ -102,9 +115,14 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	sort.Slice(posts, func(i, j int) bool {
 		return posts[i].Date.After(posts[j].Date)
 	})
+	return posts
+}
 
-	// puts a limit on recent posts
-	if len(posts) > 3 {
+// IndexHandler handles requests for the home page.
+// It displays the three most recent blog posts.
+func IndexHandler(w http.ResponseWriter, r *http.Request) {
+	posts := getSortedPosts()
+	if len(posts) > 3 { // TODO: config? dynamic?
 		posts = posts[:3]
 	}
 
@@ -123,6 +141,7 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// AboutHandler handles requests for the about page.
 func AboutHandler(w http.ResponseWriter, r *http.Request) {
 	err := tmplAbout.Execute(w, nil)
 	if err != nil {
@@ -130,14 +149,10 @@ func AboutHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// BlogHandler handles requests for the blog listing page.
+// It displays all blog posts returned from getSortedPosts().
 func BlogHandler(w http.ResponseWriter, r *http.Request) {
-	var posts []Post
-	for _, post := range postCache {
-		posts = append(posts, post)
-	}
-	sort.Slice(posts, func(i, j int) bool {
-		return posts[i].Date.After(posts[j].Date)
-	})
+	posts := getSortedPosts()
 
 	data := struct {
 		Title       string
@@ -154,6 +169,7 @@ func BlogHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// ContactHandler handles requests for the contact page.
 func ContactHandler(w http.ResponseWriter, r *http.Request) {
 	err := tmplContact.Execute(w, nil)
 	if err != nil {
@@ -161,11 +177,14 @@ func ContactHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// GetFavicon serves the favicon.ico file from the static directory.
+// Works in local dev, but not in Lambda.
 func GetFavicon(w http.ResponseWriter, r *http.Request) {
 	faviconPath := filepath.Join(baseDir, "static", "favicon.ico")
 	http.ServeFile(w, r, faviconPath)
 }
 
+// Post represents a blog post with metadata and rendered content.
 type Post struct {
 	Title       string `toml:"title"`
 	Slug        string `toml:"slug"`
@@ -176,29 +195,50 @@ type Post struct {
 	Author      Author    `toml:"author"`
 }
 
+// FormattedDate returns the post's date formatted as "January 2, 2006".
+// Returns an empty string if the date is zero.
 func (p Post) FormattedDate() string {
+	// TODO: set default date to file mod time, or log a warning
+	// https://pkg.go.dev/os#FileInfo.ModTime
 	if p.Date.IsZero() {
 		return ""
 	}
 	return p.Date.Format("January 2, 2006")
 }
 
+// Author represents the author of a blog post.
+// Email is used to mailto: the author's email address.
 type Author struct {
 	Name  string `toml:"name"`
 	Email string `toml:"email"`
 }
 
+// LoadAllPosts reads all markdown files from the blog directory and converts them
+// to Post structs. It uses goldmark to parse frontmatter and render markdown to HTML.
+// Returns a map of posts indexed by their slug.
 func LoadAllPosts() map[string]Post {
 	posts := make(map[string]Post)
+
+	// goldmark renderer configuration
 	mdRenderer := goldmark.New(
 		goldmark.WithExtensions(
-			meta.Meta,
+			meta.Meta, // enables frontmatter parsing
 			highlighting.NewHighlighting(
 				highlighting.WithStyle("dracula"),
+				// Supported styles defined under
+				// https://github.com/alecthomas/chroma/tree/master/formatters.
 			),
 		),
 	)
+
+	// NOTE: naive implementation, zipping all posts in blog/
+	// with the binary for now
+	// TODO: look at S3 for this and stylesheets?
 	postsDir := filepath.Join(baseDir, "blog")
+
+	// filepath.Glob finds all .md files in the blog directory
+	// returns a slice of file paths
+	// https://pkg.go.dev/path/filepath#Glob
 	files, err := filepath.Glob(filepath.Join(postsDir, "*.md"))
 	if err != nil {
 		log.Printf("Error globbing md files: %v", err)
@@ -227,17 +267,26 @@ func LoadAllPosts() map[string]Post {
 		}
 
 		post := Post{}
+
+		// NOTE: getting metadata from the markdown file's frontmatter
+		// https://github.com/yuin/goldmark-meta
+		// meta.Get(context) returns a map[string]interface{} of frontmatter metadata
+		// look up the key in that map, check if ok,
+		// type assert to convert interface{} to string, ok check,
+		// assign to post struct
 		if metaData := meta.Get(context); metaData != nil {
 			if title, ok := metaData["title"]; ok {
 				if titleStr, ok := title.(string); ok {
 					post.Title = titleStr
 				}
 			}
+
 			if slug, ok := metaData["slug"]; ok {
 				if slugStr, ok := slug.(string); ok {
 					post.Slug = slugStr
 				}
 			}
+
 			if dateStr, ok := metaData["date"]; ok {
 				if date, ok := dateStr.(string); ok {
 					if parsedDate, err := time.Parse("2006-01-02", date); err == nil {
@@ -245,6 +294,8 @@ func LoadAllPosts() map[string]Post {
 					}
 				}
 			}
+			// NOTE: author is unique because it links to the author's email
+			// using <a href="mailto:..."> over the name in the template
 			if author, ok := metaData["author"]; ok {
 				if authorMap, ok := author.(map[string]interface{}); ok {
 					if name, ok := authorMap["name"]; ok {
@@ -261,16 +312,15 @@ func LoadAllPosts() map[string]Post {
 					post.Author.Name = authorStr
 				}
 			}
-			if email, ok := metaData["email"]; ok {
-				if emailStr, ok := email.(string); ok {
-					post.Author.Email = emailStr
-				}
-			}
+
+			// NOTE: excerpt
 			if description, ok := metaData["description"]; ok {
 				if descriptionStr, ok := description.(string); ok {
 					post.Description = descriptionStr
 				}
 			}
+
+			// NOTE: tags
 			if category, ok := metaData["category"]; ok {
 				if categoryStr, ok := category.(string); ok {
 					post.Category = categoryStr
@@ -278,6 +328,7 @@ func LoadAllPosts() map[string]Post {
 			}
 		}
 
+		// NOTE: no slug in frontmatter, use filename instead
 		if post.Slug == "" {
 			post.Slug = strings.TrimSuffix(filepath.Base(file), ".md")
 		}

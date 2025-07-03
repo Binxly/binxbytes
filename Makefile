@@ -17,13 +17,13 @@ help:
 	@echo "  make clean          - Remove built files"
 
 dev:
-	go run main.go -dev
+	go run . -dev
 
 build:
-	go build -o binxbytes main.go
+	go build -o binxbytes .
 
 build-lambda:
-	GOOS=linux GOARCH=arm64 go build -o bootstrap main.go
+	GOOS=linux GOARCH=arm64 go build -o bootstrap .
 
 package: build-lambda
 	zip -r function.zip bootstrap static/ blog/ templates/
