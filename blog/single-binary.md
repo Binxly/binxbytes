@@ -1,6 +1,6 @@
 ---
 title: "Migrating My Website to a Single Binary"
-description: "While staring at a wall of red text after updating my portfolio website's dependencies, readying myself for an afternoon of treading through hell, I took a step back. Why do I need any of this? The web should be simple."
+description: "After a dependency update headache, I took a step back. The web should be simple. Why do I need any of this? Could I serve my website from a single file?"
 date: "2025-07-03"
 category: project
 author: Zac

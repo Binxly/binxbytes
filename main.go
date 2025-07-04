@@ -64,6 +64,7 @@ func main() {
 	mux.HandleFunc("GET /blog", BlogHandler)
 	mux.HandleFunc("GET /contact", ContactHandler)
 	mux.HandleFunc("GET /favicon.ico", GetFavicon)
+	mux.HandleFunc("GET /rss", RSSHandler)
 
 	fs := http.FileServer(http.Dir(filepath.Join(baseDir, "static")))
 	mux.Handle("GET /static/", http.StripPrefix("/static/", fs))
