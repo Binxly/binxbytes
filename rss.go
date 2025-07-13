@@ -9,18 +9,22 @@ import (
 	"github.com/gorilla/feeds"
 )
 
+// RSSHandler generates and serves an RSS feed of all blog posts at /feed.xml.
+// The feed includes post metadata, content, and is formatted according to RSS 2.0 specification.
+// Posts are included in chronological order (newest first) and include category information when available.
 func RSSHandler(w http.ResponseWriter, r *http.Request) {
 	baseURL := "https://binx.page"
 
 	posts := getSortedPosts()
+	now := time.Now()
 
 	var created, updated time.Time
 	if len(posts) > 0 {
 		created = posts[len(posts)-1].Date // oldest post
 		updated = posts[0].Date            // newest post
 	} else {
-		created = time.Now()
-		updated = time.Now()
+		created = now
+		updated = now
 	}
 
 	feed := &feeds.Feed{

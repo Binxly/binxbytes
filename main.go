@@ -1,3 +1,6 @@
+// Package main provides a simple blog server that serves markdown posts
+// converted to HTML. It supports both local development and AWS Lambda deployment.
+// See Makefile for development, build and deployment instructions.
 package main
 
 import (
@@ -64,7 +67,7 @@ func main() {
 	mux.HandleFunc("GET /blog", BlogHandler)
 	mux.HandleFunc("GET /contact", ContactHandler)
 	mux.HandleFunc("GET /favicon.ico", GetFavicon)
-	mux.HandleFunc("GET /rss", RSSHandler)
+	mux.HandleFunc("GET /feed.xml", RSSHandler)
 
 	fs := http.FileServer(http.Dir(filepath.Join(baseDir, "static")))
 	mux.Handle("GET /static/", http.StripPrefix("/static/", fs))
@@ -83,6 +86,8 @@ func main() {
 	}
 }
 
+// PostHandler handles requests for individual blog posts.
+// It looks up the post by slug in the postCache and renders it using the post template.
 func PostHandler(w http.ResponseWriter, r *http.Request) {
 	slug := r.PathValue("slug")
 
@@ -100,8 +105,8 @@ func PostHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// getSortedPosts returns a slice of all post structs sorted by date,
-// instead of sorting the slice in both IndexHandler and BlogHandler
+// getSortedPosts returns a slice of all post structs sorted by date in descending order.
+// i.e. most recent posts first
 func getSortedPosts() []Post {
 	var posts []Post
 	for _, post := range postCache {
@@ -113,9 +118,11 @@ func getSortedPosts() []Post {
 	return posts
 }
 
+// IndexHandler handles requests for the home page.
+// It displays the three most recent blog posts.
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	posts := getSortedPosts()
-	if len(posts) > 3 {
+	if len(posts) > 3 { // TODO: config? dynamic?
 		posts = posts[:3]
 	}
 
@@ -134,6 +141,7 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// AboutHandler handles requests for the about page.
 func AboutHandler(w http.ResponseWriter, r *http.Request) {
 	err := tmplAbout.Execute(w, nil)
 	if err != nil {
@@ -141,6 +149,8 @@ func AboutHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// BlogHandler handles requests for the blog listing page.
+// It displays all blog posts returned from getSortedPosts().
 func BlogHandler(w http.ResponseWriter, r *http.Request) {
 	posts := getSortedPosts()
 
@@ -159,6 +169,7 @@ func BlogHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// ContactHandler handles requests for the contact page.
 func ContactHandler(w http.ResponseWriter, r *http.Request) {
 	err := tmplContact.Execute(w, nil)
 	if err != nil {
@@ -166,11 +177,14 @@ func ContactHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// GetFavicon serves the favicon.ico file from the static directory.
+// Works in local dev, but not in Lambda.
 func GetFavicon(w http.ResponseWriter, r *http.Request) {
 	faviconPath := filepath.Join(baseDir, "static", "favicon.ico")
 	http.ServeFile(w, r, faviconPath)
 }
 
+// Post represents a blog post with metadata and rendered content.
 type Post struct {
 	Title       string `toml:"title"`
 	Slug        string `toml:"slug"`
@@ -181,6 +195,8 @@ type Post struct {
 	Author      Author    `toml:"author"`
 }
 
+// FormattedDate returns the post's date formatted as "January 2, 2006".
+// Returns an empty string if the date is zero.
 func (p Post) FormattedDate() string {
 	// TODO: set default date to file mod time, or log a warning
 	// https://pkg.go.dev/os#FileInfo.ModTime
@@ -190,11 +206,16 @@ func (p Post) FormattedDate() string {
 	return p.Date.Format("January 2, 2006")
 }
 
+// Author represents the author of a blog post.
+// Email is used to mailto: the author's email address.
 type Author struct {
 	Name  string `toml:"name"`
 	Email string `toml:"email"`
 }
 
+// LoadAllPosts reads all markdown files from the blog directory and converts them
+// to Post structs. It uses goldmark to parse frontmatter and render markdown to HTML.
+// Returns a map of posts indexed by their slug.
 func LoadAllPosts() map[string]Post {
 	posts := make(map[string]Post)
 
