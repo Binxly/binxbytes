@@ -68,6 +68,10 @@ func main() {
 	mux.HandleFunc("GET /contact", ContactHandler)
 	mux.HandleFunc("GET /favicon.ico", GetFavicon)
 	mux.HandleFunc("GET /feed.xml", RSSHandler)
+	mux.HandleFunc("GET /rss.xml", RSSHandler)
+	mux.HandleFunc("GET /rss", func(w http.ResponseWriter, r *http.Request) {
+		http.Redirect(w, r, "/rss.xml", http.StatusMovedPermanently)
+	})
 
 	fs := http.FileServer(http.Dir(filepath.Join(baseDir, "static")))
 	mux.Handle("GET /static/", http.StripPrefix("/static/", fs))
