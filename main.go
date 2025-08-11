@@ -29,13 +29,14 @@ import (
 // https://go.dev/blog/maps - look up by slug
 var postCache map[string]Post
 
-var tmplPost *template.Template
-var tmplIndex *template.Template
-var tmplAbout *template.Template
-var tmplBlog *template.Template
-var tmplContact *template.Template
-var baseDir string
-var devMode bool
+var (
+	tmplPost  *template.Template
+	tmplIndex *template.Template
+	tmplAbout *template.Template
+	tmplBlog  *template.Template
+	baseDir   string
+	devMode   bool
+)
 
 func init() {
 	flag.BoolVar(&devMode, "dev", false, "Run in development mode (use relative paths)")
@@ -54,7 +55,6 @@ func init() {
 	tmplIndex = template.Must(template.ParseFiles(filepath.Join(baseDir, "templates/index.gohtml")))
 	tmplAbout = template.Must(template.ParseFiles(filepath.Join(baseDir, "templates/about.gohtml")))
 	tmplBlog = template.Must(template.ParseFiles(filepath.Join(baseDir, "templates/blog.gohtml")))
-	tmplContact = template.Must(template.ParseFiles(filepath.Join(baseDir, "templates/contact.gohtml")))
 }
 
 func main() {
@@ -65,7 +65,6 @@ func main() {
 	mux.HandleFunc("GET /", IndexHandler)
 	mux.HandleFunc("GET /about", AboutHandler)
 	mux.HandleFunc("GET /blog", BlogHandler)
-	mux.HandleFunc("GET /contact", ContactHandler)
 	mux.HandleFunc("GET /favicon.ico", GetFavicon)
 	mux.HandleFunc("GET /feed.xml", RSSHandler)
 	mux.HandleFunc("GET /rss.xml", RSSHandler)
@@ -109,8 +108,7 @@ func PostHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// getSortedPosts returns a slice of all post structs sorted by date in descending order.
-// i.e. most recent posts first
+// getSortedPosts returns most recent posts first
 func getSortedPosts() []Post {
 	var posts []Post
 	for _, post := range postCache {
@@ -122,8 +120,7 @@ func getSortedPosts() []Post {
 	return posts
 }
 
-// IndexHandler handles requests for the home page.
-// It displays the three most recent blog posts.
+// HOME PAGE
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	posts := getSortedPosts()
 	if len(posts) > 3 { // TODO: config? dynamic?
@@ -145,7 +142,7 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// AboutHandler handles requests for the about page.
+// ABOUT PAGE
 func AboutHandler(w http.ResponseWriter, r *http.Request) {
 	err := tmplAbout.Execute(w, nil)
 	if err != nil {
@@ -153,8 +150,7 @@ func AboutHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// BlogHandler handles requests for the blog listing page.
-// It displays all blog posts returned from getSortedPosts().
+// BLOG PAGE
 func BlogHandler(w http.ResponseWriter, r *http.Request) {
 	posts := getSortedPosts()
 
@@ -173,22 +169,13 @@ func BlogHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// ContactHandler handles requests for the contact page.
-func ContactHandler(w http.ResponseWriter, r *http.Request) {
-	err := tmplContact.Execute(w, nil)
-	if err != nil {
-		http.Error(w, "Error executing template", http.StatusInternalServerError)
-	}
-}
-
-// GetFavicon serves the favicon.ico file from the static directory.
-// Works in local dev, but not in Lambda.
+// Works in local dev, but not in Lambda? wtf
 func GetFavicon(w http.ResponseWriter, r *http.Request) {
 	faviconPath := filepath.Join(baseDir, "static", "favicon.ico")
 	http.ServeFile(w, r, faviconPath)
 }
 
-// Post represents a blog post with metadata and rendered content.
+// blog post struct for metadata and rendered content.
 type Post struct {
 	Title       string `toml:"title"`
 	Slug        string `toml:"slug"`
@@ -197,28 +184,23 @@ type Post struct {
 	Content     template.HTML
 	Date        time.Time `toml:"date"`
 	Author      Author    `toml:"author"`
+	FilePath    string    // path needed for mod time
 }
 
-// FormattedDate returns the post's date formatted as "January 2, 2006".
-// Returns an empty string if the date is zero.
+// Formats date as "January 2, 2006".
+// NOTE: Add today's date if empty
 func (p Post) FormattedDate() string {
-	// TODO: set default date to file mod time, or log a warning
-	// https://pkg.go.dev/os#FileInfo.ModTime
 	if p.Date.IsZero() {
 		return ""
 	}
 	return p.Date.Format("January 2, 2006")
 }
 
-// Author represents the author of a blog post.
-// Email is used to mailto: the author's email address.
 type Author struct {
 	Name  string `toml:"name"`
 	Email string `toml:"email"`
 }
 
-// LoadAllPosts reads all markdown files from the blog directory and converts them
-// to Post structs. It uses goldmark to parse frontmatter and render markdown to HTML.
 // Returns a map of posts indexed by their slug.
 func LoadAllPosts() map[string]Post {
 	posts := make(map[string]Post)
@@ -271,6 +253,7 @@ func LoadAllPosts() map[string]Post {
 		}
 
 		post := Post{}
+		post.FilePath = file
 
 		// NOTE: getting metadata from the markdown file's frontmatter
 		// https://github.com/yuin/goldmark-meta
@@ -335,6 +318,13 @@ func LoadAllPosts() map[string]Post {
 		// NOTE: no slug in frontmatter, use filename instead
 		if post.Slug == "" {
 			post.Slug = strings.TrimSuffix(filepath.Base(file), ".md")
+		}
+
+		// If no date in frontmatter, use file mod time for sorting
+		if post.Date.IsZero() {
+			if fi, err := os.Stat(file); err == nil {
+				post.Date = fi.ModTime()
+			}
 		}
 
 		post.Content = template.HTML(buf.String())
