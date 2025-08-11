@@ -29,13 +29,14 @@ import (
 // https://go.dev/blog/maps - look up by slug
 var postCache map[string]Post
 
-var tmplPost *template.Template
-var tmplIndex *template.Template
-var tmplAbout *template.Template
-var tmplBlog *template.Template
-var tmplContact *template.Template
-var baseDir string
-var devMode bool
+var (
+	tmplPost  *template.Template
+	tmplIndex *template.Template
+	tmplAbout *template.Template
+	tmplBlog  *template.Template
+	baseDir   string
+	devMode   bool
+)
 
 func init() {
 	flag.BoolVar(&devMode, "dev", false, "Run in development mode (use relative paths)")
@@ -54,7 +55,6 @@ func init() {
 	tmplIndex = template.Must(template.ParseFiles(filepath.Join(baseDir, "templates/index.gohtml")))
 	tmplAbout = template.Must(template.ParseFiles(filepath.Join(baseDir, "templates/about.gohtml")))
 	tmplBlog = template.Must(template.ParseFiles(filepath.Join(baseDir, "templates/blog.gohtml")))
-	tmplContact = template.Must(template.ParseFiles(filepath.Join(baseDir, "templates/contact.gohtml")))
 }
 
 func main() {
@@ -65,7 +65,6 @@ func main() {
 	mux.HandleFunc("GET /", IndexHandler)
 	mux.HandleFunc("GET /about", AboutHandler)
 	mux.HandleFunc("GET /blog", BlogHandler)
-	mux.HandleFunc("GET /contact", ContactHandler)
 	mux.HandleFunc("GET /favicon.ico", GetFavicon)
 	mux.HandleFunc("GET /feed.xml", RSSHandler)
 	mux.HandleFunc("GET /rss.xml", RSSHandler)
@@ -173,14 +172,6 @@ func BlogHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// ContactHandler handles requests for the contact page.
-func ContactHandler(w http.ResponseWriter, r *http.Request) {
-	err := tmplContact.Execute(w, nil)
-	if err != nil {
-		http.Error(w, "Error executing template", http.StatusInternalServerError)
-	}
-}
-
 // GetFavicon serves the favicon.ico file from the static directory.
 // Works in local dev, but not in Lambda.
 func GetFavicon(w http.ResponseWriter, r *http.Request) {
@@ -197,13 +188,12 @@ type Post struct {
 	Content     template.HTML
 	Date        time.Time `toml:"date"`
 	Author      Author    `toml:"author"`
+	FilePath    string    // path needed for mod time
 }
 
 // FormattedDate returns the post's date formatted as "January 2, 2006".
 // Returns an empty string if the date is zero.
 func (p Post) FormattedDate() string {
-	// TODO: set default date to file mod time, or log a warning
-	// https://pkg.go.dev/os#FileInfo.ModTime
 	if p.Date.IsZero() {
 		return ""
 	}
@@ -271,6 +261,7 @@ func LoadAllPosts() map[string]Post {
 		}
 
 		post := Post{}
+		post.FilePath = file
 
 		// NOTE: getting metadata from the markdown file's frontmatter
 		// https://github.com/yuin/goldmark-meta
@@ -335,6 +326,13 @@ func LoadAllPosts() map[string]Post {
 		// NOTE: no slug in frontmatter, use filename instead
 		if post.Slug == "" {
 			post.Slug = strings.TrimSuffix(filepath.Base(file), ".md")
+		}
+
+		// If no date in frontmatter, use file mod time for sorting
+		if post.Date.IsZero() {
+			if fi, err := os.Stat(file); err == nil {
+				post.Date = fi.ModTime()
+			}
 		}
 
 		post.Content = template.HTML(buf.String())
